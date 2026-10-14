@@ -2,23 +2,21 @@ cask "trafficcontrol" do
   version :latest
   sha256 :no_check
 
-  url "https://github.com/hakubo/TrafficControl/releases/latest/download/TrafficControl.zip",
+  url "https://github.com/hakubo/TrafficControl/releases/latest/download/TrafficControl.dmg",
       verified: "github.com/hakubo/TrafficControl/"
   name "TrafficControl"
   desc "Send every link to the right browser, Chrome profile or desktop app"
   homepage "https://hakubo.github.io/TrafficControl/"
 
-  # The app updates itself with Sparkle, so the cask always installs the latest release.
-  auto_updates true
-  depends_on macos: ">= :sonoma"
+  # Always the latest release; after that the app keeps itself up to date.
+  depends_on macos: :sonoma
 
   app "TrafficControl.app"
 
   # Releases aren't notarized yet, so clear the quarantine flag the download gets;
   # otherwise macOS refuses to open the app.
-  postflight do
-    system_command "/usr/bin/xattr",
-                   args: ["-dr", "com.apple.quarantine", "#{appdir}/TrafficControl.app"]
+  postflight_steps do
+    run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{appdir}}/TrafficControl.app"]
   end
 
   uninstall quit:       "io.github.hakubo.TrafficControl",
